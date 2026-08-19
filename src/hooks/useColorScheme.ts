@@ -5,8 +5,6 @@ const STORAGE_KEY = "hashtag-calendar:theme-mode";
 /** "system" = 端末設定に追従、それ以外は手動で固定したテーマ */
 export type ColorSchemeMode = "system" | "dark" | "light";
 
-const CYCLE: readonly ColorSchemeMode[] = ["system", "dark", "light"];
-
 function readStoredMode(): ColorSchemeMode {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -23,17 +21,16 @@ function prefersDark(): boolean {
 export interface ColorScheme {
   readonly mode: ColorSchemeMode;
   readonly isDark: boolean;
-  readonly cycle: () => void;
+  readonly setMode: (mode: ColorSchemeMode) => void;
 }
 
 /**
- * 端末のライト/ダーク設定に自動追従する「システム設定」を起点に、
- * 「システム設定 → ダーク → ライト → システム設定 …」の順で手動固定を巡回する。
+ * 端末のライト/ダーク設定に自動追従する「システム設定」と、手動固定の「ダーク」「ライト」を切り替える。
  * 手動固定は localStorage に保存し、次回訪問時にも維持する(「システム設定」時は保存しない)。
  */
 export function useColorScheme(): ColorScheme {
   const [systemDark, setSystemDark] = useState<boolean>(prefersDark);
-  const [mode, setMode] = useState<ColorSchemeMode>(readStoredMode);
+  const [mode, setModeState] = useState<ColorSchemeMode>(readStoredMode);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -49,21 +46,18 @@ export function useColorScheme(): ColorScheme {
     document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
 
-  const cycle = useCallback(() => {
-    setMode((current) => {
-      const next = CYCLE[(CYCLE.indexOf(current) + 1) % CYCLE.length] ?? "system";
-      try {
-        if (next === "system") {
-          localStorage.removeItem(STORAGE_KEY);
-        } else {
-          localStorage.setItem(STORAGE_KEY, next);
-        }
-      } catch {
-        // private mode 等で localStorage が使えない場合は永続化を諦める
+  const setMode = useCallback((next: ColorSchemeMode) => {
+    try {
+      if (next === "system") {
+        localStorage.removeItem(STORAGE_KEY);
+      } else {
+        localStorage.setItem(STORAGE_KEY, next);
       }
-      return next;
-    });
+    } catch {
+      // private mode 等で localStorage が使えない場合は永続化を諦める
+    }
+    setModeState(next);
   }, []);
 
-  return { mode, isDark, cycle };
+  return { mode, isDark, setMode };
 }

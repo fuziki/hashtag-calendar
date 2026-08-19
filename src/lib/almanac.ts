@@ -66,9 +66,30 @@ export function hasHashtag(tags: readonly string[]): boolean {
   return tags.some((tag) => tag.trim().startsWith("#"));
 }
 
-/** X（Twitter）検索用のURLを組み立てる */
-export function xSearchUrl(tags: readonly string[]): string {
-  const query = tags.join(" OR ");
+/**
+ * `parsed`(月日)の直近の発生日を年をまたいで解決する。`now`より後ろにはならない
+ * （今日を含め過去なら今年、今年はまだ来ていなければ去年の日付になる）。
+ */
+export function resolveRecentOccurrence(parsed: ParsedDate, now: Date): Date {
+  const nowMonth = now.getMonth() + 1;
+  const nowDay = now.getDate();
+  const isPastOrToday = parsed.month < nowMonth || (parsed.month === nowMonth && parsed.day <= nowDay);
+  const year = now.getFullYear() - (isPastOrToday ? 0 : 1);
+  return new Date(year, parsed.month - 1, parsed.day);
+}
+
+function toISODate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+/** X（Twitter）検索用のURLを組み立てる。`targetDate` の1日分に絞り込む */
+export function xSearchUrl(tags: readonly string[], targetDate: Date): string {
+  const until = new Date(targetDate);
+  until.setDate(until.getDate() + 1);
+  const query = `${tags.join(" OR ")} since:${toISODate(targetDate)} until:${toISODate(until)}`;
   return `https://x.com/search?q=${encodeURIComponent(query)}&src=typed_query&f=live`;
 }
 

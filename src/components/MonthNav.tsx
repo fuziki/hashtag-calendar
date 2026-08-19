@@ -35,10 +35,9 @@ export function MonthNav({
       {/* ナビが「浮いているだけ」か「コンテンツと被っているか」を検知するセンチネル */}
       <div ref={sentinelRef} style={{ height: 1 }} aria-hidden="true" />
 
-      <div className="sticky z-10 px-3 sm:px-4 pt-2" style={{ top: 0 }}>
+      <div className="sticky z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-2" style={{ top: 0 }}>
         <div
           ref={navRef}
-          className="max-w-4xl mx-auto"
           style={{
             background: navStuck ? "var(--color-glass-bg)" : "transparent",
             backdropFilter: navStuck ? "blur(20px) saturate(180%)" : "none",

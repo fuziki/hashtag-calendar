@@ -31,7 +31,7 @@ export function MonthSection({ block, scrollOffset }: MonthSectionProps) {
                 <span className="flex-1 min-w-0 break-words text-sm sm:text-base font-bold text-[var(--color-accent-text)]">
                   {firstItem.tags.join(" / ")}
                 </span>
-                {hasHashtag(firstItem.tags) && <TagSearchLink tags={firstItem.tags} />}
+                {hasHashtag(firstItem.tags) && <TagSearchLink tags={firstItem.tags} date={firstItem.date} />}
               </div>
             ) : (
               <span
@@ -54,7 +54,7 @@ export function MonthSection({ block, scrollOffset }: MonthSectionProps) {
                       <span className="flex-1 min-w-0 break-words text-sm sm:text-base font-bold text-[var(--color-accent-text)]">
                         {item.tags.join(" / ")}
                       </span>
-                      {hasHashtag(item.tags) && <TagSearchLink tags={item.tags} />}
+                      {hasHashtag(item.tags) && <TagSearchLink tags={item.tags} date={item.date} />}
                     </div>
                     <p className="mt-0.5 text-xs sm:text-sm leading-relaxed text-[var(--color-text-muted)]">
                       {item.description}

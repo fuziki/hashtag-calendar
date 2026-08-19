@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# 元データ(このリポジトリには含めない)
+public/hashtags.md
+scripts/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -44,6 +44,11 @@ export function useColorScheme(): ColorScheme {
 
   const isDark = mode === "system" ? systemDark : mode === "dark";
 
+  // CSSカスタムプロパティ(index.css の `.dark` 定義)を切り替えるトリガー
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+
   const cycle = useCallback(() => {
     setMode((current) => {
       const next = CYCLE[(CYCLE.indexOf(current) + 1) % CYCLE.length] ?? "system";

@@ -85,3 +85,45 @@ export function groupByDate(entries: readonly AlmanacEntry[]): DateGroup[] {
   }
   return Array.from(map.entries(), ([date, items]) => ({ date, items }));
 }
+
+export type TodayBadgeLabel = "本日" | "明日" | "次";
+
+/** 今日パネルに表示する内容（先頭1件 + 同日中の残り） */
+export interface TodayPanelResult {
+  readonly badgeLabel: TodayBadgeLabel;
+  readonly head: AlmanacEntry;
+  readonly rest: readonly AlmanacEntry[];
+}
+
+/**
+ * `entries` は日付順という前提で、`now` ちょうどのエントリ（複数可）があればそれを、
+ * 無ければ次に来るエントリを返す。年末で「次」が見つからない場合は先頭（＝来年最初のエントリ）にフォールバックする。
+ */
+export function computeTodayPanel(entries: readonly AlmanacEntry[], now: Date): TodayPanelResult | null {
+  const nowMonth = now.getMonth() + 1;
+  const nowDay = now.getDate();
+
+  const exactToday = entries.filter((entry) => {
+    const parsed = parseDate(entry.date);
+    return parsed !== null && parsed.month === nowMonth && parsed.day === nowDay;
+  });
+
+  const nextUp =
+    entries.find((entry) => {
+      const parsed = parseDate(entry.date);
+      if (!parsed) return false;
+      return parsed.month > nowMonth || (parsed.month === nowMonth && parsed.day > nowDay);
+    }) ?? entries[0];
+
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  const nextUpDate = nextUp ? parseDate(nextUp.date) : null;
+  const isNextUpTomorrow =
+    nextUpDate !== null && nextUpDate.month === tomorrow.getMonth() + 1 && nextUpDate.day === tomorrow.getDate();
+
+  const badgeLabel: TodayBadgeLabel = exactToday.length > 0 ? "本日" : isNextUpTomorrow ? "明日" : "次";
+  const items = exactToday.length > 0 ? exactToday : nextUp ? [nextUp] : [];
+  const [head, ...rest] = items;
+
+  return head ? { badgeLabel, head, rest } : null;
+}

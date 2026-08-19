@@ -1,5 +1,4 @@
 import type { RefObject } from "react";
-import type { ThemeTokens } from "../lib/theme";
 
 const NAV_PAD = 6; // px: 外枠の内側パディング(全辺共通)
 const BTN_HALF_HEIGHT = 16; // px: ボタンの実測高さ(約32px)の半分 = カプセル時の実効角丸半径
@@ -9,8 +8,6 @@ interface MonthNavProps {
   readonly months: readonly string[];
   readonly activeMonth: string | undefined;
   readonly onSelect: (month: string) => void;
-  readonly theme: ThemeTokens;
-  readonly isDark: boolean;
   readonly navStuck: boolean;
   readonly oneRow: boolean;
   readonly navRef: RefObject<HTMLDivElement | null>;
@@ -25,8 +22,6 @@ export function MonthNav({
   months,
   activeMonth,
   onSelect,
-  theme,
-  isDark,
   navStuck,
   oneRow,
   navRef,
@@ -45,10 +40,10 @@ export function MonthNav({
           ref={navRef}
           className="max-w-4xl mx-auto"
           style={{
-            background: navStuck ? theme.glassBg : "transparent",
+            background: navStuck ? "var(--color-glass-bg)" : "transparent",
             backdropFilter: navStuck ? "blur(20px) saturate(180%)" : "none",
             WebkitBackdropFilter: navStuck ? "blur(20px) saturate(180%)" : "none",
-            border: `1px solid ${navStuck ? theme.glassBorder : "transparent"}`,
+            border: `1px solid ${navStuck ? "var(--color-glass-border)" : "transparent"}`,
             boxShadow: navStuck ? "0 8px 24px rgba(0, 0, 0, 0.1)" : "none",
             borderRadius: outerRadius,
             padding: NAV_PAD,
@@ -69,9 +64,9 @@ export function MonthNav({
                   onClick={() => onSelect(month)}
                   className="tabular-nums text-xs sm:text-sm py-1.5 transition-all duration-200"
                   style={{
-                    color: active ? (isDark ? "#FFFFFF" : "#000000") : theme.textMuted,
-                    background: active ? theme.accentBg : "transparent",
-                    boxShadow: active ? theme.navShadow : "none",
+                    color: active ? "var(--color-nav-active-text)" : "var(--color-text-muted)",
+                    background: active ? "var(--color-accent-bg)" : "transparent",
+                    boxShadow: active ? "var(--shadow-nav)" : "none",
                     fontWeight: active ? 600 : 500,
                     borderRadius: BTN_RADIUS,
                   }}

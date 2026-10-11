@@ -1,10 +1,30 @@
+import { readFileSync } from 'node:fs'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
+
+const ALMANAC_PATH = new URL('./data/hashtags.enc', import.meta.url)
+
+/** `data/hashtags.enc` (Base64) をHTML本文に埋め込み、実行時の追加fetchをなくす */
+function inlineAlmanac(): Plugin {
+  return {
+    name: 'inline-almanac',
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'script',
+          attrs: { id: 'almanac-data', type: 'text/plain' },
+          children: readFileSync(ALMANAC_PATH, 'utf-8').trim(),
+          injectTo: 'body-prepend',
+        },
+      ]
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), inlineAlmanac()],
   base: '/hashtag-calendar/',
   server: {
     host: true,

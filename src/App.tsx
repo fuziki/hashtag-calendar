@@ -19,7 +19,7 @@ function scrollToMonth(month: string): void {
 }
 
 function App() {
-  const { months, isLoading, error } = useAlmanac();
+  const { months, error } = useAlmanac();
   const { mode, setMode } = useColorScheme();
   const { accent, setAccent } = useAccentColor();
 
@@ -54,12 +54,7 @@ function App() {
             {error}
           </p>
         )}
-        {!error && isLoading && (
-          <p className="px-3 py-3 sm:px-4 rounded-md mb-6 text-sm bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)]">
-            読み込み中…
-          </p>
-        )}
-        {!error && !isLoading && todayPanel && (
+        {!error && todayPanel && (
           <TodayPanel
             badgeLabel={todayPanel.badgeLabel}
             head={todayPanel.head}

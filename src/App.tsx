@@ -1,5 +1,6 @@
 import { useMemo, useRef } from "react";
 import { AccentColorPicker } from "./components/AccentColorPicker";
+import { LicenseSection } from "./components/LicenseSection";
 import { MonthNav } from "./components/MonthNav";
 import { MonthSection } from "./components/MonthSection";
 import { ShareSection } from "./components/ShareSection";
@@ -92,6 +93,7 @@ function App() {
               <AccentColorPicker accent={accent} onChange={setAccent} />
             </div>
             <ShareSection />
+            <LicenseSection />
           </div>
         </footer>
       </div>

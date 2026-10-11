@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
+import { licenses } from './vite-plugins/licenses.ts'
 
 const ALMANAC_PATH = new URL('./data/hashtags.enc', import.meta.url)
 
@@ -24,7 +25,7 @@ function inlineAlmanac(): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), inlineAlmanac()],
+  plugins: [react(), tailwindcss(), inlineAlmanac(), licenses()],
   base: '/hashtag-calendar/',
   server: {
     host: true,

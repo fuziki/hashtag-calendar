@@ -85,11 +85,14 @@ function toISODate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-/** X（Twitter）検索用のURLを組み立てる。`targetDate` の1日分に絞り込む */
+/**
+ * X（Twitter）検索用のURLを組み立てる。`targetDate` の当日0時から翌日0時（JST）までに絞り込む。
+ * 日付だけの `since:`/`until:` はUTC扱いで日本の1日とずれるため、タイムゾーン付きで指定する。
+ */
 export function xSearchUrl(tags: readonly string[], targetDate: Date): string {
-  const until = new Date(targetDate);
-  until.setDate(until.getDate() + 1);
-  const query = `${tags.join(" OR ")} since:${toISODate(targetDate)} until:${toISODate(until)}`;
+  const next = new Date(targetDate);
+  next.setDate(next.getDate() + 1);
+  const query = `${tags.join(" OR ")} since:${toISODate(targetDate)}_00:00:00_JST until:${toISODate(next)}_00:00:00_JST`;
   return `https://x.com/search?q=${encodeURIComponent(query)}&src=typed_query&f=live`;
 }
 

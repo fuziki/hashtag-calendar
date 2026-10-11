@@ -2,6 +2,7 @@ import { useMemo, useRef } from "react";
 import { AccentColorPicker } from "./components/AccentColorPicker";
 import { MonthNav } from "./components/MonthNav";
 import { MonthSection } from "./components/MonthSection";
+import { ShareSection } from "./components/ShareSection";
 import { ThemeModeControl } from "./components/ThemeModeControl";
 import { TodayPanel } from "./components/TodayPanel";
 import { useAccentColor } from "./hooks/useAccentColor";
@@ -90,6 +91,7 @@ function App() {
               <h3 className="text-xs font-semibold text-[var(--color-text-muted)]">アクセントカラー</h3>
               <AccentColorPicker accent={accent} onChange={setAccent} />
             </div>
+            <ShareSection />
           </div>
         </footer>
       </div>
